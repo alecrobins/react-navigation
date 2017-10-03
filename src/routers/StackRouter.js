@@ -36,6 +36,9 @@ export default (
   // Fail fast on invalid route definitions
   validateRouteConfigMap(routeConfigs);
 
+  const { mode } = stackConfig;
+  const isModal = mode && mode === 'modal';
+
   const childRouters = {};
   const routeNames = Object.keys(routeConfigs);
 
@@ -108,7 +111,7 @@ export default (
               {
                 ...action,
                 type: undefined,
-                key: `Init-${_getUuid()}`,
+                key: isModal ? action.routeName : `Init-${_getUuid()}`,
               },
             ],
           };
@@ -131,7 +134,7 @@ export default (
         route = {
           ...route,
           routeName: initialRouteName,
-          key: `Init-${_getUuid()}`,
+          key: isModal ? initialRouteName : `Init-${_getUuid()}`,
           ...(params ? { params } : {}),
         };
         // eslint-disable-next-line no-param-reassign
@@ -173,13 +176,13 @@ export default (
           route = {
             params: action.params,
             ...childRouter.getStateForAction(childAction),
-            key: _getUuid(),
+            key: isModal ? action.routeName : _getUuid(),
             routeName: action.routeName,
           };
         } else {
           route = {
             params: action.params,
-            key: _getUuid(),
+            key: isModal ? action.routeName : _getUuid(),
             routeName: action.routeName,
           };
         }
@@ -213,7 +216,7 @@ export default (
             if (routeToPush) {
               return StateUtils.push(state, {
                 ...routeToPush,
-                key: _getUuid(),
+                key: isModal ? childRouterName : _getUuid(),
                 routeName: childRouterName,
               });
             }
@@ -256,12 +259,12 @@ export default (
                   ...childAction,
                   ...router.getStateForAction(childAction),
                   routeName: childAction.routeName,
-                  key: _getUuid(),
+                  key: isModal ? childAction.routeName : _getUuid(),
                 };
               }
               const route = {
                 ...childAction,
-                key: _getUuid(),
+                key: isModal ? childAction.routeName : _getUuid(),
               };
               delete route.type;
               return route;

@@ -34,6 +34,7 @@ export default (
     initialRouteParams,
     paths,
     navigationOptions,
+    mode,
   };
 
   const router = StackRouter(routeConfigMap, stackRouterConfig);
